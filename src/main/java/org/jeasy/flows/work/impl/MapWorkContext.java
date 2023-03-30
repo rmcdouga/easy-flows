@@ -21,42 +21,43 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-package org.jeasy.flows.workflow;
+package org.jeasy.flows.work.impl;
 
-import org.assertj.core.api.Assertions;
-import org.jeasy.flows.work.DefaultWorkReport;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.jeasy.flows.work.WorkContext;
-import org.jeasy.flows.work.WorkStatus;
-import org.jeasy.flows.work.impl.MapWorkContext;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-public class ParallelFlowReportTest {
+/**
+ * Work execution context implementation using ConcurrentHashMap. This can be used to pass initial parameters to the
+ * workflow and share data between work units.
+ * 
+ * <strong>Work context instances are thread-safe.</strong>
+ * 
+ * @author Mahmoud Ben Hassine (mahmoud.benhassine@icloud.com)
+ */
+public class MapWorkContext implements WorkContext {
+	
+	private final Map<String, Object> context = new ConcurrentHashMap<>();
 
-	private Exception exception;
-	private ParallelFlowReport parallelFlowReport;
-
-	@BeforeEach
-	public void setUp() {
-		exception = new Exception("test exception");
-		WorkContext workContext = new MapWorkContext();
-		parallelFlowReport = new ParallelFlowReport();
-		parallelFlowReport.add(new DefaultWorkReport(WorkStatus.FAILED, workContext, exception));
-		parallelFlowReport.add(new DefaultWorkReport(WorkStatus.COMPLETED, workContext));
+	@Override
+	public void put(String key, Object value) {
+		context.put(key, value);
 	}
 
-    @Test
-    void testGetStatus() {
-		Assertions.assertThat(parallelFlowReport.getStatus()).isEqualTo(WorkStatus.FAILED);
+	@Override
+	public Object get(String key) {
+		return context.get(key);
+	}
+	
+	@Override
+	public Set<Map.Entry<String, Object>> getEntrySet() {
+		return context.entrySet();
 	}
 
-    @Test
-    void testGetError() {
-		Assertions.assertThat(parallelFlowReport.getError()).isEqualTo(exception);
-	}
-
-    @Test
-    void testGetReports() {
-		Assertions.assertThat(parallelFlowReport.getReports()).hasSize(2);
+	@Override
+	public String toString() {
+		return "context=" + context + '}';
 	}
 }

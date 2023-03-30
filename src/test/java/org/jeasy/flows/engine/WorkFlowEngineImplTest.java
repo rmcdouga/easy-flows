@@ -33,6 +33,7 @@ import org.jeasy.flows.work.Work;
 import org.jeasy.flows.work.WorkContext;
 import org.jeasy.flows.work.WorkReport;
 import org.jeasy.flows.work.WorkStatus;
+import org.jeasy.flows.work.impl.MapWorkContext;
 import org.jeasy.flows.workflow.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -99,7 +100,7 @@ public class WorkFlowEngineImplTest {
                 .build();
 
         WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = new MapWorkContext();
         WorkReport workReport = workFlowEngine.run(sequentialFlow, workContext);
         executorService.shutdown();
         assertThat(workReport.getStatus()).isEqualTo(WorkStatus.COMPLETED);
@@ -133,7 +134,7 @@ public class WorkFlowEngineImplTest {
                 .build();
 
         WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = new MapWorkContext();
         WorkReport workReport = workFlowEngine.run(workflow, workContext);
         executorService.shutdown();
         assertThat(workReport.getStatus()).isEqualTo(WorkStatus.COMPLETED);
@@ -157,7 +158,7 @@ public class WorkFlowEngineImplTest {
                 .build();
 
         WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = new MapWorkContext();
         workContext.put("partition1", "hello foo");
         workContext.put("partition2", "hello bar");
         WorkReport workReport = workFlowEngine.run(workflow, workContext);

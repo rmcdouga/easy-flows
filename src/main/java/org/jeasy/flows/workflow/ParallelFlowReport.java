@@ -26,6 +26,7 @@ package org.jeasy.flows.workflow;
 import org.jeasy.flows.work.WorkContext;
 import org.jeasy.flows.work.WorkReport;
 import org.jeasy.flows.work.WorkStatus;
+import org.jeasy.flows.work.impl.MapWorkContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,7 @@ public class ParallelFlowReport implements WorkReport {
      */
     @Override
     public WorkContext getWorkContext() {
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = new MapWorkContext();
         for (WorkReport report : reports) {
             WorkContext partialContext = report.getWorkContext();
             for (Map.Entry<String, Object> entry : partialContext.getEntrySet()) {
